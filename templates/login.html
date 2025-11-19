@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Alzheimer Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+</head>
+<body class="auth-bg min-h-screen flex items-center justify-center py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Welcome Back, Doctor!</h1>
+            <p class="text-blue-100 text-lg">Continue your medical journey with AI-powered Alzheimer detection</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="md:flex">
+                <!-- Left Side - Illustration -->
+                <div class="hidden md:block md:w-2/5 bg-gradient-to-br from-green-600 to-blue-700 p-8 text-white">
+                    <div class="flex flex-col justify-center h-full">
+                        <div class="text-6xl mb-6">👨‍⚕️</div>
+                        <h2 class="text-2xl font-bold mb-4">Medical Intelligence Awaits</h2>
+                        <p class="text-blue-100 mb-6">
+                            Access your patient dashboard and continue making a difference in Alzheimer's care.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-brain text-xl mr-3"></i>
+                                <span>AI-Powered Insights</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-xl mr-3"></i>
+                                <span>Patient Management</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chart-bar text-xl mr-3"></i>
+                                <span>Progress Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Login Form -->
+                <div class="md:w-3/5 p-8">
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                        <p class="text-gray-600">Sign in to your medical dashboard</p>
+                    </div>
+
+                    <form id="loginForm" class="space-y-6">
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2"></i>Username or Email
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                                <input type="text" name="username" required 
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                                       placeholder="Enter your username or email">
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2"></i>Password
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                                <input type="password" name="password" required 
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                                       placeholder="Enter your password">
+                                <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember" 
+                                       class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500">
+                                <label for="remember" class="ml-2 text-sm text-gray-600">
+                                    Remember me
+                                </label>
+                            </div>
+                            <a href="#" class="text-sm text-green-600 hover:text-green-700 font-semibold">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg group">
+                            <i class="fas fa-sign-in-alt mr-2 group-hover:rotate-12 transition-transform"></i>
+                            Sign In to Dashboard
+                        </button>
+
+                        <!-- Social Login (Optional) -->
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <button type="button" 
+                                    class="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300">
+                                <i class="fab fa-google text-red-500 mr-2"></i>
+                                <span class="text-sm font-medium">Google</span>
+                            </button>
+                            <button type="button" 
+                                    class="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300">
+                                <i class="fab fa-microsoft text-blue-500 mr-2"></i>
+                                <span class="text-sm font-medium">Microsoft</span>
+                            </button>
+                        </div>
+
+                        <!-- Register Link -->
+                        <div class="text-center pt-4 border-t border-gray-200">
+                            <p class="text-gray-600">
+                                Don't have an account? 
+                                <a href="/register" class="text-green-600 font-semibold hover:underline ml-1">
+                                    Create account here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="hidden text-center py-6">
+                        <div class="loading-spinner"></div>
+                        <p class="text-gray-600 mt-3">Authenticating...</p>
+                    </div>
+
+                    <!-- Demo Credentials -->
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 class="text-sm font-semibold text-blue-800 mb-2 flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Demo Credentials
+                        </h3>
+                        <div class="text-xs text-blue-600 space-y-1">
+                            <p><strong>Username:</strong> demo_doctor</p>
+                            <p><strong>Password:</strong> demo123</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid md:grid-cols-3 gap-6 mt-8">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center text-white">
+                <i class="fas fa-shield-alt text-2xl mb-3"></i>
+                <h3 class="font-semibold mb-2">Secure & Private</h3>
+                <p class="text-blue-100 text-sm">HIPAA compliant data protection</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center text-white">
+                <i class="fas fa-rocket text-2xl mb-3"></i>
+                <h3 class="font-semibold mb-2">Fast Results</h3>
+                <p class="text-blue-100 text-sm">AI analysis in seconds</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center text-white">
+                <i class="fas fa-chart-line text-2xl mb-3"></i>
+                <h3 class="font-semibold mb-2">Track Progress</h3>
+                <p class="text-blue-100 text-sm">Monitor patient history</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        // Password toggle functionality
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.querySelector('input[name="password"]');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Login form handling
+        // Login form handling - IMPROVED VERSION
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Show loading
+    submitButton.disabled = true;
+    loadingSpinner.classList.remove('hidden');
+    
+    try {
+        const formData = new FormData(form);
+        const username = formData.get('username');
+        const password = formData.get('password');
+        
+        console.log("🔐 Login attempt:", { username, password: '***' });
+        
+        // Use URLSearchParams for better compatibility
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'username': username,
+                'password': password
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("📥 Login response:", result);
+
+        if (result.success) {
+            // Show success and redirect
+            loadingSpinner.innerHTML = `
+                <div class="text-green-500 text-4xl mb-2">✅</div>
+                <p class="text-green-600 font-semibold">Login Successful!</p>
+                <p class="text-gray-600">Redirecting to dashboard...</p>
+            `;
+            
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500);
+        } else {
+            throw new Error(result.message || 'Login failed');
+        }
+
+    } catch (error) {
+        console.error("❌ Login error:", error);
+        loadingSpinner.classList.add('hidden');
+        submitButton.disabled = false;
+        
+        // Better error messages
+        let errorMessage = 'Login failed: ';
+        if (error.message.includes('Failed to fetch')) {
+            errorMessage += 'Cannot connect to server. Please check if the backend is running.';
+        } else if (error.message.includes('Server error')) {
+            errorMessage += 'Server error. Please try again.';
+        } else {
+            errorMessage += error.message;
+        }
+        
+        alert(errorMessage);
+    }
+});
+
+        // Add input animations
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-green-200');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-green-200');
+            });
+        });
+
+        // Auto-fill demo credentials for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Uncomment the following lines for easy testing
+            /*
+            document.querySelector('input[name="username"]').value = 'demo_doctor';
+            document.querySelector('input[name="password"]').value = 'demo123';
+            */
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Alzheimer Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for dashboard */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-left: 4px solid white;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-stable { background: #10b981; color: white; }
+        .status-improving { background: #3b82f6; color: white; }
+        .status-monitoring { background: #f59e0b; color: white; }
+        .status-critical { background: #ef4444; color: white; }
+    </style>
+</head>
+<body class="gradient-bg">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 p-6 text-white">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 mb-10">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <i class="fas fa-brain text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">NeuroCare AI</h1>
+                    <p class="text-xs text-purple-200">Alzheimer Detection</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <a href="/dashboard" class="nav-item active flex items-center space-x-3 p-3">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="/detect" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-search w-5"></i>
+                    <span>MRI Detection</span>
+                </a>
+                
+                <a href="#" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-users w-5"></i>
+                    <span>Patients' List</span>
+                </a>
+                
+                <a href="#" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-heartbeat w-5"></i>
+                    <span>Patient Monitoring</span>
+                </a>
+                
+                <a href="#" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-pills w-5"></i>
+                    <span>Medication Plan</span>
+                </a>
+                
+                <a href="#" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-comments w-5"></i>
+                    <span>Communities</span>
+                </a>
+                
+                <a href="/results" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-history w-5"></i>
+                    <span>Results History</span>
+                </a>
+                
+                <a href="/settings" class="nav-item flex items-center space-x-3 p-3">
+                    <i class="fas fa-cog w-5"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <!-- Logout Button -->
+            <div class="absolute bottom-6 left-6 right-6">
+                <a href="/logout" class="flex items-center space-x-3 p-3 text-red-200 hover:text-white hover:bg-red-500 rounded-lg transition-all duration-300">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="bg-white/10 backdrop-blur-sm border-b border-white/20 p-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Hello, Doctor!</h1>
+                        <p class="text-purple-200">I'm here to help you</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-white font-semibold">Dr. {{ user.name }}</p>
+                            <p class="text-purple-200 text-sm">Last login: {{ user.login_time }}</p>
+                        </div>
+                        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-md text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="p-6">
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card rounded-xl p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-200 text-sm">Total Patients</p>
+                                <h3 class="text-3xl font-bold mt-2">24</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card rounded-xl p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-200 text-sm">Today's Tests</p>
+                                <h3 class="text-3xl font-bold mt-2">8</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-medical text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card rounded-xl p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-200 text-sm">Positive Cases</p>
+                                <h3 class="text-3xl font-bold mt-2">3</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card rounded-xl p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-200 text-sm">Recovery Rate</p>
+                                <h3 class="text-3xl font-bold mt-2">78%</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-line text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Action Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- MRI Detection Card -->
+                    <div class="bg-white rounded-2xl p-8 card-hover fade-in">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-2">Detect Alzheimer's</h2>
+                                <p class="text-gray-600">Upload MRI scans for AI-powered analysis and early detection</p>
+                            </div>
+                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-search text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <a href="/detect" class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-play"></i>
+                            <span>Start MRI Analysis</span>
+                        </a>
+                    </div>
+
+                    <!-- Patients List Card -->
+                    <div class="bg-white rounded-2xl p-8 card-hover fade-in">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800 mb-2">Patients' List</h2>
+                                <p class="text-gray-600">Check your patients' condition and medical history</p>
+                            </div>
+                            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-users text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <button class="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-teal-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-list"></i>
+                            <span>View All Patients</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Patients & Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Recent Patients -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 card-hover fade-in">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Recent Patients</h2>
+                            <a href="#" class="text-purple-600 hover:text-purple-700 text-sm font-semibold">View All</a>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            {% for patient in patients %}
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-purple-300 transition-all duration-300">
+                                <div class="flex items-center space-x-4">
+                                    <img src="{{ url_for('static', filename='images/patient-avatars/' + patient.avatar) }}" 
+                                         alt="{{ patient.name }}" 
+                                         class="patient-avatar">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">{{ patient.name }}</h4>
+                                        <p class="text-sm text-gray-600">Last test: {{ patient.last_test }}</p>
+                                    </div>
+                                </div>
+                                <span class="status-badge {{ patient.status }}">{{ patient.status|title }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="space-y-6">
+                        <!-- Patient Monitoring -->
+                        <div class="bg-white rounded-2xl p-6 card-hover fade-in">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-heartbeat text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Patient Monitoring</h3>
+                                    <p class="text-sm text-gray-600">Real-time tracking</p>
+                                </div>
+                            </div>
+                            <button class="w-full bg-blue-50 text-blue-600 py-2 rounded-lg hover:bg-blue-100 transition-colors duration-300">
+                                Monitor Now
+                            </button>
+                        </div>
+
+                        <!-- Medication Plan -->
+                        <div class="bg-white rounded-2xl p-6 card-hover fade-in">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-pills text-green-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Medication Plan</h3>
+                                    <p class="text-sm text-gray-600">Treatment schedules</p>
+                                </div>
+                            </div>
+                            <button class="w-full bg-green-50 text-green-600 py-2 rounded-lg hover:bg-green-100 transition-colors duration-300">
+                                View Plans
+                            </button>
+                        </div>
+
+                        <!-- Communities -->
+                        <div class="bg-white rounded-2xl p-6 card-hover fade-in">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-comments text-purple-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Communities</h3>
+                                    <p class="text-sm text-gray-600">Doctor networks</p>
+                                </div>
+                            </div>
+                            <button class="w-full bg-purple-50 text-purple-600 py-2 rounded-lg hover:bg-purple-100 transition-colors duration-300">
+                                Join Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Predictions -->
+                {% if predictions %}
+                <div class="mt-8 bg-white rounded-2xl p-6 card-hover fade-in">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Predictions</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 text-gray-600 font-semibold">Date</th>
+                                    <th class="text-left py-3 text-gray-600 font-semibold">Image</th>
+                                    <th class="text-left py-3 text-gray-600 font-semibold">Result</th>
+                                    <th class="text-left py-3 text-gray-600 font-semibold">Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prediction in predictions %}
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-3 text-gray-600">{{ prediction.prediction_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td class="py-3 text-gray-600">{{ prediction.image_path }}</td>
+                                    <td class="py-3">
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold 
+                                            {% if 'Non_Demented' in prediction.parsed_result.prediction %}bg-green-100 text-green-800
+                                            {% else %}bg-red-100 text-red-800{% endif %}">
+                                            {{ prediction.parsed_result.prediction }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 text-gray-600">{{ "%.2f"|format(prediction.parsed_result.confidence * 100) }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Dashboard specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded successfully!');
+            
+            // Add active class to current nav item
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const link = item.getAttribute('href');
+                if (currentPath === link) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Card hover effects
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Smooth animations
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Logout confirmation
+            const logoutBtn = document.querySelector('a[href="/logout"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to logout?')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+
+        // Real-time updates (simulated)
+        function updateStats() {
+            // This would typically fetch from an API
+            console.log('Updating dashboard stats...');
+        }
+
+        // Update stats every 30 seconds
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>

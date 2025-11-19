@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Alzheimer Detection</title>
+    
+    <!-- Use CDN for everything temporarily -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Inline your auth.css styles -->
+    <style>
+        .auth-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        /* Copy ALL your auth.css content here temporarily */
+        .auth-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Form animations */
+        .form-group {
+            transition: all 0.3s ease;
+        }
+
+        .form-group:focus-within {
+            transform: translateY(-2px);
+        }
+
+        /* Card hover effects */
+        .bg-white {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .bg-white:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        /* Input focus effects */
+        input:focus, select:focus {
+            transform: scale(1.02);
+        }
+
+        /* Button hover effects */
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="auth-bg min-h-screen flex items-center justify-center py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Join Our Medical Community</h1>
+            <p class="text-blue-100 text-lg">Start detecting Alzheimer's with AI-powered technology</p>
+        </div>
+
+        <!-- Registration Card -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="md:flex">
+                <!-- Left Side - Illustration -->
+                <div class="hidden md:block md:w-2/5 bg-gradient-to-br from-blue-600 to-purple-700 p-8 text-white">
+                    <div class="flex flex-col justify-center h-full">
+                        <div class="text-6xl mb-6">🏥</div>
+                        <h2 class="text-2xl font-bold mb-4">Medical Intelligence</h2>
+                        <p class="text-blue-100 mb-6">
+                            Join thousands of healthcare professionals using AI to detect Alzheimer's disease early.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-brain text-xl mr-3"></i>
+                                <span>AI-Powered Detection</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-shield-alt text-xl mr-3"></i>
+                                <span>Secure & Private</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chart-line text-xl mr-3"></i>
+                                <span>Progress Tracking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Registration Form -->
+                <div class="md:w-3/5 p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
+                    <p class="text-gray-600 mb-6">Join our healthcare platform today</p>
+
+                    <form id="registerForm" class="space-y-4">
+                        <!-- Username & Email -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                <div class="relative">
+                                    <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="text" name="username" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="Choose username">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <div class="relative">
+                                    <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="email" name="email" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="your@email.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Birth Year & Gender -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Birth Year</label>
+                                <div class="relative">
+                                    <i class="fas fa-calendar absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="number" name="birth_year" min="1900" max="2025" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="1990">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                                <div class="relative">
+                                    <i class="fas fa-venus-mars absolute left-3 top-3 text-gray-400"></i>
+                                    <select name="gender" required 
+                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blood Group & Address -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+                                <div class="relative">
+                                    <i class="fas fa-tint absolute left-3 top-3 text-gray-400"></i>
+                                    <select name="blood_group" required 
+                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select Blood Group</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <div class="relative">
+                                    <i class="fas fa-home absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="text" name="address" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="Your address">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <div class="relative">
+                                    <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="password" name="password" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="••••••••">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                <div class="relative">
+                                    <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                                    <input type="password" name="confirm_password" required 
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           placeholder="••••••••">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms & Submit -->
+                        <div class="flex items-center mb-4">
+                            <input type="checkbox" id="terms" required 
+                                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="terms" class="ml-2 text-sm text-gray-600">
+                                I agree to the <a href="#" class="text-blue-600 hover:underline">Terms & Conditions</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Create Account
+                        </button>
+
+                        <div class="text-center">
+                            <p class="text-gray-600">
+                                Already have an account? 
+                                <a href="/login" class="text-blue-600 font-semibold hover:underline">Sign In</a>
+                            </p>
+                        </div>
+                    </form>
+
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="hidden text-center py-4">
+                        <div class="loading-spinner"></div>
+                        <p class="text-gray-600 mt-2">Creating your account...</p>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div id="successMessage" class="hidden text-center py-4">
+                        <div class="text-green-500 text-4xl mb-2">✅</div>
+                        <p class="text-green-600 font-semibold">Registration Successful!</p>
+                        <p class="text-gray-600">Redirecting to login...</p>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="hidden mt-4 p-4 bg-red-100 border border-red-300 rounded-lg text-red-700"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Show error function
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
+
+            // Hide error function
+            function hideError() {
+                errorMessage.classList.add('hidden');
+            }
+
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Basic validation
+                const password = registerForm.password.value;
+                const confirmPassword = registerForm.confirm_password.value;
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match!');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long!');
+                    return;
+                }
+
+                // Show loading
+                registerForm.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+                hideError();
+
+                try {
+                    const formData = new FormData(registerForm);
+                    
+                    console.log('📝 Sending registration request...');
+                    
+                    const response = await fetch('/register', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    console.log('📊 Registration response:', result);
+
+                    if (result.success) {
+                        // Show success message
+                        loadingSpinner.classList.add('hidden');
+                        successMessage.classList.remove('hidden');
+                        
+                        console.log('✅ Registration successful, redirecting to login...');
+                        
+                        // Redirect to login after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 2000);
+                    } else {
+                        throw new Error(result.message);
+                    }
+
+                } catch (error) {
+                    console.error('❌ Registration error:', error);
+                    loadingSpinner.classList.add('hidden');
+                    registerForm.classList.remove('hidden');
+                    showError('Registration failed: ' + error.message);
+                }
+            });
+
+            // Add input animations
+            const inputs = registerForm.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('ring-2', 'ring-blue-200');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('ring-2', 'ring-blue-200');
+                    
+                    // Basic validation
+                    if (!this.value) {
+                        this.classList.add('border-red-300');
+                    } else {
+                        this.classList.remove('border-red-300');
+                    }
+                });
+            });
+
+            console.log('✅ Registration form initialized successfully!');
+        });
+    </script>
+</body>
+</html>
