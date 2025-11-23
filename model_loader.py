@@ -64,15 +64,15 @@ class AlzheimerModel:
             prediction = self.model.predict(processed_img, verbose=0)
             predicted_index = np.argmax(prediction)
             predicted_class = self.classes[predicted_index]
-            confidence = float(np.max(prediction)) * 100  # percentage
+            confidence = float(np.max(prediction))   # percentage
 
             print(f"✅ Prediction: {predicted_class} ({confidence:.2f}%)")
 
             return {
                 "prediction": predicted_class,
-                "confidence": round(confidence, 2),
+                "confidence": round(confidence, 4),
                 "all_predictions": {
-                    label: round(float(prob) * 100, 2)
+                    label: round(float(prob),4)
                     for label, prob in zip(self.classes, prediction[0])
                 },
             }
