@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results History - Alzheimer Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 14px;
+            border: 2px dashed #d1d5db;
+        }
+        
+        .image-error {
+            background: #fef2f2;
+            border: 2px dashed #fecaca;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Results History</h1>
+            <p class="text-blue-100 text-lg">All your MRI scan predictions</p>
+            <a href="/dashboard" class="inline-flex items-center space-x-2 mt-4 text-white hover:text-blue-200">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </a>
+        </div>
+
+        <!-- Results Grid -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            {% if predictions %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for prediction in predictions %}
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow">
+                    <!-- Image Preview -->
+                    <div class="mb-4">
+                        <div id="imageContainer-{{ prediction.id }}" class="w-full h-48 rounded-lg overflow-hidden">
+                            <img src="/get_image/{{ prediction.id }}" 
+                                 alt="MRI Scan" 
+                                 class="w-full h-48 object-cover rounded-lg cursor-pointer transition-opacity duration-300"
+                                 onclick="showImageModal('{{ prediction.id }}')"
+                                 onload="handleImageLoad('{{ prediction.id }}')"
+                                 onerror="handleImageError('{{ prediction.id }}')"
+                                 id="mriImage-{{ prediction.id }}">
+                        </div>
+                    </div>
+                    
+                    <!-- Prediction Details -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Date:</span>
+                            <span class="text-sm font-semibold">{{ prediction.prediction_date.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Result:</span>
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold 
+                                {% if 'NonDemented' in prediction.parsed_result.prediction %}bg-green-100 text-green-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ prediction.parsed_result.prediction }}
+                            </span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Confidence:</span>
+                            <span class="text-sm font-semibold">{{ "%.1f"|format(prediction.parsed_result.confidence * 100) }}%</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Image:</span>
+                            <span class="text-sm text-gray-600 truncate ml-2" title="{{ prediction.image_path }}">
+                                {{ prediction.image_path|default('Not available') }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="mt-4 flex space-x-2">
+                        <button onclick="showImageModal('{{ prediction.id }}')" 
+                                class="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors flex items-center justify-center"
+                                id="viewBtn-{{ prediction.id }}">
+                            <i class="fas fa-eye mr-2"></i>View
+                        </button>
+                        <button onclick="downloadImage('{{ prediction.id }}')" 
+                                class="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-600 transition-colors flex items-center justify-center"
+                                id="downloadBtn-{{ prediction.id }}">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-folder-open text-6xl text-gray-400 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No predictions yet</h3>
+                <p class="text-gray-500 mb-6">Upload your first MRI scan to see results here</p>
+                <a href="/detect" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors inline-flex items-center">
+                    <i class="fas fa-upload mr-2"></i>Upload MRI Scan
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-full overflow-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">MRI Scan Analysis</h3>
+                <button onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalImageContainer" class="flex items-center justify-center min-h-96">
+                <img id="modalImage" src="" alt="MRI Scan" class="max-w-full max-h-96 object-contain"
+                     onerror="handleModalImageError()">
+            </div>
+            <div id="modalDetails" class="text-gray-600 mt-4"></div>
+        </div>
+    </div>
+
+    <script>
+        // Image loading handlers
+        function handleImageLoad(predictionId) {
+            console.log(`✅ Image loaded for prediction ${predictionId}`);
+            const image = document.getElementById(`mriImage-${predictionId}`);
+            image.style.opacity = '1';
+        }
+
+        function handleImageError(predictionId) {
+            console.log(`❌ Image failed to load for prediction ${predictionId}`);
+            const container = document.getElementById(`imageContainer-${predictionId}`);
+            const image = document.getElementById(`mriImage-${predictionId}`);
+            
+            // Hide the broken image
+            image.style.display = 'none';
+            
+            // Create placeholder
+            container.innerHTML = `
+                <div class="image-placeholder image-error w-full h-48 rounded-lg flex flex-col items-center justify-center cursor-pointer" onclick="showImageModal('${predictionId}')">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <span class="text-sm font-medium">Image Not Available</span>
+                    <span class="text-xs mt-1">Click to try viewing</span>
+                </div>
+            `;
+            
+            // Disable buttons
+            const viewBtn = document.getElementById(`viewBtn-${predictionId}`);
+            const downloadBtn = document.getElementById(`downloadBtn-${predictionId}`);
+            
+            if (viewBtn) viewBtn.disabled = true;
+            if (downloadBtn) downloadBtn.disabled = true;
+        }
+
+        function handleModalImageError() {
+            const modalContainer = document.getElementById('modalImageContainer');
+            modalContainer.innerHTML = `
+                <div class="image-placeholder image-error w-full h-96 rounded-lg flex flex-col items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                    <span class="text-lg font-medium">Image Not Available</span>
+                    <span class="text-sm mt-2 text-gray-600">The MRI scan image could not be loaded</span>
+                    <span class="text-xs mt-1 text-gray-500">This may be due to file corruption or storage issues</span>
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function showImageModal(predictionId) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalContainer = document.getElementById('modalImageContainer');
+            
+            // Reset modal content
+            modalContainer.innerHTML = `
+                <img id="modalImage" src="/get_image/${predictionId}" alt="MRI Scan" 
+                     class="max-w-full max-h-96 object-contain"
+                     onerror="handleModalImageError()">
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Add prediction details if available
+            const modalDetails = document.getElementById('modalDetails');
+            modalDetails.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><strong>Prediction ID:</strong> ${predictionId}</div>
+                    <div><strong>Status:</strong> <span class="loading-text">Loading...</span></div>
+                </div>
+            `;
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function downloadImage(predictionId) {
+            // Check if image exists before downloading
+            const img = new Image();
+            img.onload = function() {
+                // Image exists, proceed with download
+                const link = document.createElement('a');
+                link.href = `/get_image/${predictionId}`;
+                link.download = `mri_scan_${predictionId}_${new Date().getTime()}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success feedback
+                showDownloadFeedback(predictionId, true);
+            };
+            
+            img.onerror = function() {
+                // Image doesn't exist
+                showDownloadFeedback(predictionId, false);
+            };
+            
+            img.src = `/get_image/${predictionId}`;
+        }
+
+        function showDownloadFeedback(predictionId, success) {
+            const downloadBtn = document.getElementById(`downloadBtn-${predictionId}`);
+            const originalHTML = downloadBtn.innerHTML;
+            
+            if (success) {
+                downloadBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Downloaded!';
+                downloadBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                downloadBtn.classList.add('bg-green-600');
+            } else {
+                downloadBtn.innerHTML = '<i class="fas fa-times mr-2"></i>Failed!';
+                downloadBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                downloadBtn.classList.add('bg-red-500');
+            }
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalHTML;
+                downloadBtn.classList.remove('bg-green-600', 'bg-red-500');
+                downloadBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+            }, 2000);
+        }
+
+        // Close modal on background click
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageModal();
+            }
+        });
+
+        // Add loading states for images
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial opacity for loading images
+            const images = document.querySelectorAll('img[id^="mriImage-"]');
+            images.forEach(img => {
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.3s ease-in-out';
+            });
+        });
+    </script>
+</body>
+</html>
