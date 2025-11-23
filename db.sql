@@ -23,3 +23,13 @@ CREATE TABLE predictions (
     prediction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+-- Add this to your db.sql file
+ALTER TABLE predictions ADD COLUMN image_data LONGBLOB;
+ALTER TABLE predictions ADD COLUMN image_hash VARCHAR(255);
+ALTER TABLE predictions ADD COLUMN encryption_key VARCHAR(255);
+USE alzheimer_app;
+
+
+
+-- Update the existing image_path column to be more flexible
+ALTER TABLE predictions MODIFY image_path VARCHAR(500);
